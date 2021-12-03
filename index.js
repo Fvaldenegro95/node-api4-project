@@ -1,25 +1,38 @@
 require('dotenv').config()
-const path = require('path')
+
 const express = require('express')
+const cors = require('cors')
 
-const server = express();
+
+const server = express()
+
+const PORT = process.env.PORT || 9000
+
 server.use(express.json())
-server.use(express.static(path.join(__dirname, 'client/build')))
+server.use(cors())
 
-server.get('/api/users', (req, res) => {
-    res.json([
-        {id: 1, username: "sneed"},
-        {id: 2, username: "chuck"},
-        {id: 3, username: "feednseed"},
-    ])
+server.get('/api/users', (req, res)=>{
+  res.json({
+      message:"SNEED"
+  })
 })
 
-server.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+server.use('*', (req, res)=>{
+    res.send(`<h1>SNEED</h1>`)
 })
 
-const PORT = process.env.PORT || 8080
 
-server.listen(PORT, () => {
+
+
+server.use((err, req, res, next)=>{ // eslint-disable line
+res.status(500).json({
+    message: err.message,
+    stack: err.stack,
+})
+})
+
+server.listen()
+
+server.listen(PORT, ()=>{
     console.log(`listening on ${PORT}`)
 })
